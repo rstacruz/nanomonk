@@ -179,6 +179,7 @@ module Nano
 
     # Gem::Specification
     def dependize(gem)
+      return if gem.nil?
       add_dependency gem.name, options.merge({ :version => gem.version.to_s })
       run "gem unpack #{gem.name} -v #{gem.version.to_s} --target=vendor"
 
