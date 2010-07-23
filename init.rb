@@ -3,8 +3,6 @@ ROOT_DIR = File.expand_path(File.dirname(__FILE__)) unless defined? ROOT_DIR
 require "rubygems"
 require "vendor/dependencies/lib/dependencies"
 require "monk/glue"
-require "ohm"
-require "less"
 
 class Main < Monk::Glue
   set     :app_file, __FILE__
