@@ -37,12 +37,14 @@ private
       end
     end
 
-    # Try gem
+    # Try installing the gem.
+    req_name = package.gsub('-', '/')
     gem_install package
+    add_require req_name
 
     caveats I(%{
       The gem `#{package}` has been installed.
-      Don't forget to add it the `require "#{package.gsub('-','/')}"` yourself!
+      init.rb has been auto-updated with `require "#{req_name}"`.
     })
   end
   

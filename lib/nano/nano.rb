@@ -164,12 +164,6 @@ module Nano
       # and unpack the gems to vendor/.
       empty_directory "vendor"
       dependize(spec)
-
-      # Add to init.rb. Infer the require name from the gem name
-      # (ohm-contrib => 'ohm/contrib')
-      req = options[:require]
-      req = gemname.gsub('-', '/')  if req === true
-      add_require req  unless req.nil?
     end
 
     # Works like append_file, except creates files if they aren't found.
