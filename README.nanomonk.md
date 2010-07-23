@@ -15,7 +15,7 @@ Create a new app from this skeleton.
     monk init myapp -s nano
     cd myapp
 
-Install a templating system.
+Install a templating system. Do this first!
 
     monk install haml
 
