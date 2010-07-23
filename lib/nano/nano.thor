@@ -5,8 +5,8 @@ class Monk < Thor
   include Thor::Actions
   include Nano::Actions
 
-  desc "add", "Adds a package."
-  def add(package)
+  desc "install", "Installs a package."
+  def install(package)
     begin
       # Try local
       f = File.join(self.class.recipe_local_path, "#{package}.rb")
