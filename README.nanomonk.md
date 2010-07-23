@@ -8,7 +8,7 @@ Instructions
 
 Add the `nano` skeleton.
 
-   monk add nano git://github.com/rstacruz/nanomonk
+    monk add nano git://github.com/rstacruz/nanomonk
 
 Create a new app from this skeleton.
 
