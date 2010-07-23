@@ -31,7 +31,7 @@ private
       f = self.class.recipe_remote(package) unless File.exists?(f)
 
       begin
-        apply(f)
+        return apply(f)
       rescue OpenURI::HTTPError
         nil
       end
@@ -39,6 +39,7 @@ private
 
     # Try gem
     gem_install package
+
     caveats I(%{
       The gem `#{package}` has been installed.
       Don't forget to add it the `require "#{package.gsub('-','/')}"` yourself!
