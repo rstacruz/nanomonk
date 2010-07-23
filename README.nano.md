@@ -25,6 +25,7 @@ Install an ORM (if needed).
 
 Try a few more packages!
 
+    monk install contest
     monk install rtopia
     monk install less
     monk install sinatra-minify
