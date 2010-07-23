@@ -37,7 +37,7 @@ private
   end
 
   def self.recipe_remote_path
-    'http://github.com/sinefunc/nanomonk-recipes/tree/master/blob/recipes/'
+    'http://github.com/sinefunc/nanomonk-recipes/master/blob/recipes/'
   end
 
   def self.source_root
