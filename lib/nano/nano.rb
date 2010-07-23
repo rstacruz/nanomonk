@@ -168,13 +168,14 @@ module Nano
     # Returns the Gem::Specification for a certain gem.
     # Returns nil if the gem is not available.
     def get_gemspec(gemname)
-      require 'yaml'
-
       # Trigger the autoload of this class, as it's needed
       # for YAML::load().
       Gem::Specification
-      fname = `gem specification #{gemname}`
-      YAML::load(fname) || nil
+      specs = `gem specification #{gemname} 2>&1`
+      return nil  if $?.to_i > 0
+
+      require 'yaml'
+      YAML::load(specs) || nil
     end
 
     # Gem::Specification
