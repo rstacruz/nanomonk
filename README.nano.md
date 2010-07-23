@@ -48,3 +48,9 @@ to create the other necessary files such as configuration files and Rake tasks.
 If a recipe doesn't exist for the gem, it'll simply be installed and vendored.
 
 Have a look at the current recipes at: http://github.com/rstacruz/nanomonk-recipes/tree/master/recipes/
+
+To do
+-----
+
+ - add_dependency should update an existing dependency instead of add
+ - gem_install_from_git?

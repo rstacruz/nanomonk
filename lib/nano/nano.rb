@@ -211,7 +211,11 @@ module Nano
     def dependize(gem)
       return if gem.nil?
       add_dependency gem.name, options.merge({ :version => gem.version.to_s })
-      run "gem unpack #{gem.name} -v #{gem.version.to_s} --target=vendor"
+
+      gem_dir = File.join(root_path, 'vendor', "#{gem.name}-#{gem.version.to_s}"))
+      unless File.directory?(gem_dir)
+        run "gem unpack #{gem.name} -v #{gem.version.to_s} --target=vendor"
+      end
 
       gem.dependencies.each do |dep|
         next  if dep.type != :runtime
