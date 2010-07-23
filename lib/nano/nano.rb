@@ -32,7 +32,7 @@ module Nano
 
     # Add caveats to be shown at the end of the process.
     def caveats(str)
-      @caveats ||= ""
+      @caveats ||= []
       @caveats << str
     end
 

@@ -39,7 +39,7 @@ class Monk < Thor
     end
 
     unless @caveats.nil?
-      puts @caveats
+      puts "\n" + [@caveats].join("\n\n")
     end
   end
 
