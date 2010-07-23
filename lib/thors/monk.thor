@@ -1,58 +1,9 @@
 class Monk < Thor
-  include Thor::Actions
-
-  desc "test", "Run all tests"
-  def test
-    verify_config(:test)
-
-    $:.unshift File.join(File.dirname(__FILE__), "..", "..", "test")
-
-    Dir['test/**/*_test.rb'].each do |file|
-      load file unless file =~ /^-/
-    end
-  end
-
-  desc "test_unit", "Run all unit tests"
-  def test_unit
-    verify_config(:test)
-
-    $:.unshift File.join(File.dirname(__FILE__), "..", "..", "test")
-
-    Dir['test/unit/**/*_test.rb'].each do |file|
-      load file unless file =~ /^-/
-    end
-  end
-
-  desc "test_routes", "Run all route tests"
-  def test_routes
-    verify_config(:test)
-
-    $:.unshift File.join(File.dirname(__FILE__), "..", "..", "test")
-
-    Dir['test/routes/**/*_test.rb'].each do |file|
-      load file unless file =~ /^-/
-    end
-  end
-
-  desc "stories", "Run user stories."
-  method_option :pdf, :type => :boolean
-  def stories
-    $:.unshift(Dir.pwd, "test")
-
-    ARGV << "-r"
-    ARGV << (options[:pdf] ? "stories-pdf" : "stories")
-    ARGV.delete("--pdf")
-
-    Dir["test/stories/*_test.rb"].each do |file|
-      load file
-    end
-  end
-
   desc "start ENV", "Start Monk in the supplied environment"
   def start(env = ENV["RACK_ENV"] || "development")
     verify_config(env)
 
-    exec "env RACK_ENV=#{env} ruby init.rb"
+    run "env RACK_ENV=#{env} ruby init.rb"
   end
 
   desc "copy_example EXAMPLE, TARGET", "Copies an example file to its destination"

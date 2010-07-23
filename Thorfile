@@ -1,4 +1,6 @@
 class Monk < Thor
+  include Thor::Actions
+
 private
   def root_path(*args)
     File.expand_path(File.join(File.dirname(__FILE__), args))
