@@ -106,18 +106,6 @@ module Nano
       inject_into_file fname, str, :before => "end #class"
     end
 
-    # Returns the Gem::Specification for a certain gem.
-    # Returns nil if the gem is not available.
-    def get_gem_info(gemname)
-      require 'yaml'
-
-      # Trigger the autoload of this class, as it's needed
-      # for YAML::load().
-      Gem::Specification
-      fname = `gem specification #{gemname}`
-      YAML::load(fname) || nil
-    end
-
     # Adds a gem as a dependency.
     # Example: gem_install 'sinatra-security'
     #
@@ -126,28 +114,21 @@ module Nano
     #     :git     => string
     #     :version => string (not supported yet)
     #
-    # TODO: vendor the requirements as well
-    #
     def gem_install(gemname, options={})
       raise Nano::AlreadyInstalledError  if installed?(gemname)
 
       # Get the gemspec; install it if needed.
-      spec = get_gem_info(gemname)
+      spec = get_gemspec(gemname)
       if spec.nil?
         run "gem install #{gemname}"
         raise Nano::NoGemError  if $?.to_i > 0
-        spec = get_gem_info(gemname)
+        spec = get_gemspec(gemname)
       end
 
-      # A gem and it's dependencies
-      gems = ([spec] | spec.dependencies.map { |dep| get_gem_info(dep.name) })
+      # Add it (and it's dependencies) to the deps file,
+      # and unpack the gems to vendor/.
       empty_directory "vendor"
-
-      # Add to the dependencies file and unpack.
-      gems.each do |gem|
-        add_dependency gem.name, options.merge({ :version => gem.version.to_s })
-        run "gem unpack #{gem.name} -v #{gem.version.to_s} --target=vendor"
-      end
+      dependize(spec)
 
       # Add to init.rb. Infer the require name from the gem name
       # (ohm-contrib => 'ohm/contrib')
@@ -181,5 +162,27 @@ module Nano
       str += "\n"  unless str[-1] == "\n" # Ensure last newline
       str
     end
-end
 
+  private
+
+    # Returns the Gem::Specification for a certain gem.
+    # Returns nil if the gem is not available.
+    def get_gemspec(gemname)
+      require 'yaml'
+
+      # Trigger the autoload of this class, as it's needed
+      # for YAML::load().
+      Gem::Specification
+      fname = `gem specification #{gemname}`
+      YAML::load(fname) || nil
+    end
+
+    # Gem::Specification
+    def dependize(gem)
+      add_dependency gem.name, options.merge({ :version => gem.version.to_s })
+      run "gem unpack #{gem.name} -v #{gem.version.to_s} --target=vendor"
+
+      gem.dependencies.each { |dep| dependize get_gemspec(dep.name) }
+    end
+  end
+end
