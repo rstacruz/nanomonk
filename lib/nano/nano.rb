@@ -30,6 +30,12 @@ module Nano
       File.exists?(file) ? append_file(file, str) : create_file(file, str)
     end
 
+    # Add caveats to be shown at the end of the process.
+    def caveats(str)
+      @caveats ||= ""
+      @caveats << str
+    end
+
     # Adds directives to the app config file. Accepts strings or hashes.
     def add_config(args)
       # Strings: append at EOF.

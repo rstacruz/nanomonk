@@ -22,6 +22,10 @@ class Monk < Thor
       # Try gem
       gem_install package, :require => true
 
+      unless @caveats.nil?
+        puts @caveats
+      end
+
     rescue Nano::AlreadyInstalledError
       puts "This gem is already installed."
 
