@@ -112,12 +112,29 @@ module Nano
       inject_into_file fname, str, :before => "end #class"
     end
 
+    # Adds some definitions under class Test::Unit::TestCase.
+    #
+    # Example:
+    #   add_test_helper I(%{
+    #     def app
+    #       Main.new
+    #     end
+    #   })
+    #
     def add_test_helper(str)
       str = reindent(str).gsub(/^/, '  ')
       fname = File.join(self.class.source_root, 'test', 'test_helper.rb')
       inject_into_file fname, str, :before => "end #class"
     end
 
+    # Adds some statements under Test::Unit::TestCase#setup.
+    #
+    # Example:
+    #   add_test_setup I(%{
+    #     # Remove this if you don't want a fresh database everytime.
+    #     Ohm.flush
+    #   })
+    #
     def add_test_setup(str)
       str = reindent(str).gsub(/^/, '    ')
       fname = File.join(self.class.source_root, 'test', 'test_helper.rb')
