@@ -43,3 +43,5 @@ Some gems have recipes for them: for instance, the `ohm` gem will have a recipe
 to create the other necessary files such as configuration files and Rake tasks.
 
 If a recipe doesn't exist for the gem, it'll simply be installed and vendored.
+
+Have a look at the current recipes at: http://github.com/rstacruz/nanomonk-recipes/tree/master/recipes/
