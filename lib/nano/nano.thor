@@ -6,26 +6,33 @@ class Monk < Thor
   include Nano::Actions
 
   desc "install", "Installs a package."
+  method_option :gem, :type => :boolean
   def install(package)
     catch :done do
       begin
-        # Try local
-        f = File.join(self.class.recipe_local_path, "#{package}.rb")
-        f = File.expand_path(f)
-        if File.exists?(f)
-          apply(f)
-          throw :done
-        end
+        unless options[:gem]
+          # Try local
+          f = File.join(self.class.recipe_local_path, "#{package}.rb")
+          f = File.expand_path(f)
+          if File.exists?(f)
+            apply(f)
+            throw :done
+          end
 
-        # Try remote
-        begin
-          apply("#{self.class.recipe_remote_path}#{package}.rb")
-          throw :done
-        rescue OpenURI::HTTPError
+          # Try remote
+          begin
+            apply("#{self.class.recipe_remote_path}#{package}.rb")
+            throw :done
+          rescue OpenURI::HTTPError
+          end
         end
 
         # Try gem
-        gem_install package, :require => true
+        gem_install package
+        caveats I(%{
+          The gem `#{package}` has been installed.
+          Don't forget to add it the `require "#{package.gsub('-','/')}"` yourself!
+        })
         throw :done
 
       rescue Nano::AlreadyInstalledError
