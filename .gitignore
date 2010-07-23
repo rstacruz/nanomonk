@@ -1,1 +1,24 @@
-lib/nano/recipes
+# Mac OS
+.DS_Store
+
+# Textmate
+*.tmproj
+tmtags
+
+# Emacs
+*~
+\#*
+.\#*
+
+# VIM
+*.swp
+*.swo
+*.swn
+
+# Project (general)
+/lib/nano/recipes
+/vendor/*/vendor
+/tmp
+/*.log
+
+# Others
