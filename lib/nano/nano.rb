@@ -121,7 +121,7 @@ module Nano
     def add_test_setup(str)
       str = reindent(str).gsub(/^/, '    ')
       fname = File.join(self.class.source_root, 'test', 'test_helper.rb')
-      inject_into_file fname, str, :before => "end #setup"
+      inject_into_file fname, str, :before => "  end #setup"
     end
 
     # Adds a gem as a dependency.
