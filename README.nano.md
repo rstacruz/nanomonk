@@ -2,6 +2,8 @@ Nanomonk
 ========
 
 This is a skeleton without anything but `monk-glue` and a new command, `monk install`.
+The goal is to have a skeleton that will let you create the skeleton you want,
+free from the restrictions of the default gems that most monk skeletons ship with.
 
 Instructions
 ------------
