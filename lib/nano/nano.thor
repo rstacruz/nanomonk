@@ -1,15 +1,27 @@
 # To do:
 #  monk add less
-#  monk gem less
-#
 require 'thor'
 
 module Nano
+  class AlreadyInstalledError < StandardError; end
+  class NoGemError < StandardError; end
+
   module Actions
     def I(str)
       reindent(str)
     end
 
+    # Queries if a gem is installed in the dependencies file.
+    def installed?(gem)
+      fname = 'dependencies'
+      return false  unless File.exists?(fname)
+      
+      # Fail if not found in the deps file
+      deps = File.open(fname) { |f| f.read }
+      not deps.match(/^#{gem}/).nil?
+    end
+
+    # Reindents a string. Good for heredoc strings and such.
     def reindent(str)
       str = str[1..-1]  if str[0] == "\n" # Remove first newline
       str.gsub!(/^#{str.match(/^\s*/)[0]}/, '') # Unindent
@@ -17,20 +29,25 @@ module Nano
       str
     end
 
+    # Works like append_file, except creates files if they aren't found.
     def append_file_p(file, str)
-      if File.exists?(file)
-        append_file file, str
-      else
-        create_file file, str
-      end
+      File.exists?(file) ? append_file(file, str) : create_file(file, str)
     end
 
-    # Adds stuff to appconfig.
     def add_config(args)
+      # Strings: append at EOF.
       if args.is_a? String
         append_file_p 'config/appconfig.yml', reindent(args)
-      else
-        # Merge...
+
+      # Hash: Merge the hash into the current app config.
+      elsif args.is_a? Hash
+        require 'yaml'
+        fname = 'config/appconfig.yml'
+        
+        config = {}
+        config = YAML::load(fname)  if File.exists?(fname)
+        config = config.merge(args)
+        File.open(fname, 'w') { |f| f << YAML::dump(config) }
       end
     end
 
@@ -69,6 +86,8 @@ module Nano
       require 'yaml'
       require 'rubygems'
 
+      raise Nano::AlreadyInstalledError  if installed?(gemname)
+
       # Trigger the autoload of this class, as it's needed
       # for YAML::load().
       Gem::Specification
@@ -77,10 +96,11 @@ module Nano
       begin
         f = run "gem specification #{gemname}"
         spec = YAML::load(f)
-        raise StandardError  if spec === false
+        raise StandardError  if $?.to_i > 0
 
       rescue StandardError
         run "gem install #{gemname}"
+        raise Nano::NoGemError  if $?.to_i > 0
         retry
 
       #rescue Gem install failed
@@ -118,35 +138,42 @@ class Monk < Thor
   include Nano::Actions
 
   desc "add", "Adds a package."
-  method_option :gem,  :type => :string
   def add(package)
-    # Try local
-    f = File.join(self.class.recipe_local_path, "#{package}.rb")
-    f = File.expand_path(f)
-    return apply(f)  if File.exists? (f)
-
-    # Try remote
     begin
-      f = "#{self.class.recipe_remote_path}#{package}.rb"
-      return apply f
-    rescue OpenURI::HTTPError
+      # Try local
+      f = File.join(self.class.recipe_local_path, "#{package}.rb")
+      f = File.expand_path(f)
+      return apply(f)  if File.exists? (f)
+
+      # Try remote
+      begin
+        f = "#{self.class.recipe_remote_path}#{package}.rb"
+        return apply(f)
+      rescue OpenURI::HTTPError
+      end
+
+      # Try gem
+      gem_install package, :require => true
+
+    rescue Nano::AlreadyInstalledError
+      puts "This gem is already installed."
+
+    rescue Nano::NoGemError
+      puts "No such gem/package."
     end
-
-    # Try gem
-    gem_install package, :require => true
   end
 
-  desc "gem", "Adds a gem"
-  method_option :git, :type => :string
-  method_option :v,   :type => :string
-  def gem(gemname, requires=nil)
-    opts = {}
-    opts[:require]   = requires  unless requires.nil?
-    opts[:git]       = options[:git] unless options[:git].nil?
-    #opts[:version]  = options[:v]   unless options[:v].nil?
+  # desc "gem", "Adds a gem"
+  # method_option :git, :type => :string
+  # method_option :v,   :type => :string
+  # def gem(gemname, requires=nil)
+  #   opts = {}
+  #   opts[:require]   = requires  unless requires.nil?
+  #   opts[:git]       = options[:git] unless options[:git].nil?
+  #   #opts[:version]  = options[:v]   unless options[:v].nil?
 
-    gem_install(gemname, opts)
-  end
+  #   gem_install(gemname, opts)
+  # end
 
 private
 

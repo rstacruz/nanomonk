@@ -1,4 +1,6 @@
-gem_install "ohm", :require => "ohm"
+gem_install "ohm"
+
+add_require "ohm"
 
 add_initializer %{
   # Connect to redis database.
