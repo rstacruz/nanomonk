@@ -80,7 +80,7 @@ module Nano
 
     def add_test_require(modules)
       str = [modules].flatten.map { |mod| "require \"#{mod}\"\n" }.join('')
-      fname = File.join(self.class.source_root, 'test', 'test_helpers.rb')
+      fname = File.join(self.class.source_root, 'test', 'test_helper.rb')
       inject_into_file fname, str, :before => /^\s*\nclass/
     end
 
