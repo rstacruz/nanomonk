@@ -38,6 +38,7 @@ module Nano
     #     Ohm has been installed. Please make sure you have Redis
     #     installed, otherwise results will be catastrophic.
     #   }
+    #
     def caveats(str)
       @caveats ||= []
       @caveats << reindent(str)
@@ -105,6 +106,18 @@ module Nano
       inject_into_file fname, str, :before => "end #class"
     end
 
+    # Returns the Gem::Specification for a certain gem.
+    # Returns nil if the gem is not available.
+    def get_gem_info(gemname)
+      require 'yaml'
+
+      # Trigger the autoload of this class, as it's needed
+      # for YAML::load().
+      Gem::Specification
+      fname = `gem specification #{gemname}`
+      YAML::load(fname) || nil
+    end
+
     # Adds a gem as a dependency.
     # Example: gem_install 'sinatra-security'
     #
@@ -116,38 +129,28 @@ module Nano
     # TODO: vendor the requirements as well
     #
     def gem_install(gemname, options={})
-      require 'yaml'
-      require 'rubygems'
-
       raise Nano::AlreadyInstalledError  if installed?(gemname)
 
-      # Trigger the autoload of this class, as it's needed
-      # for YAML::load().
-      Gem::Specification
-
-      # Get the gemspec.
-      begin
-        f = run "gem specification #{gemname}"
-        spec = YAML::load(f)
-        raise StandardError  if $?.to_i > 0
-
-      rescue StandardError
+      # Get the gemspec; install it if needed.
+      spec = get_gem_info(gemname)
+      if spec.nil?
         run "gem install #{gemname}"
         raise Nano::NoGemError  if $?.to_i > 0
-        retry
-
-      #rescue Gem install failed
-        #return ...?
+        spec = get_gem_info(gemname)
       end
 
-      # Add to the dependencies file.
-      add_dependency gemname, options.merge({ :version => spec.version.to_s })
-
-      # Vendor it.
+      # A gem and it's dependencies
+      gems = ([spec] | spec.dependencies.map { |dep| get_gem_info(dep.name) })
       empty_directory "vendor"
-      run "gem unpack #{gemname} -v #{spec.version.to_s} --target=vendor"
 
-      # Add to init.rb
+      # Add to the dependencies file and unpack.
+      gems.each do |gem|
+        add_dependency gem.name, options.merge({ :version => gem.version.to_s })
+        run "gem unpack #{gem.name} -v #{gem.version.to_s} --target=vendor"
+      end
+
+      # Add to init.rb. Infer the require name from the gem name
+      # (ohm-contrib => 'ohm/contrib')
       req = options[:require]
       req = gemname.gsub('-', '/')  if req === true
       add_require req  unless req.nil?
@@ -159,6 +162,7 @@ module Nano
     end
 
     # Adds a gem to the dependency file.
+    # (This will almost never need to be called.)
     def add_dependency(gemname, options={})
       create_file 'dependencies' unless File.exists?(File.join(self.class.source_root, 'dependencies'))
       append_file 'dependencies' do
@@ -177,7 +181,5 @@ module Nano
       str += "\n"  unless str[-1] == "\n" # Ensure last newline
       str
     end
-
-  end
 end
 
