@@ -78,6 +78,12 @@ module Nano
       inject_into_file fname, str, :before => /^\s*\nclass/
     end
 
+    def add_test_require(modules)
+      str = [modules].flatten.map { |mod| "require \"#{mod}\"\n" }.join('')
+      fname = File.join(self.class.source_root, 'test', 'test_helpers.rb')
+      inject_into_file fname, str, :before => /^\s*\nclass/
+    end
+
     # Adds something at the end of the class into the init.rb bootstrapper.
     # The given string will be added to the end of the class definition.
     # 
@@ -103,6 +109,12 @@ module Nano
     def add_class_def(str)
       str = reindent(str).gsub(/^/, '  ')
       fname = File.join(self.class.source_root, 'init.rb')
+      inject_into_file fname, str, :before => "end #class"
+    end
+
+    def add_test_helper(str)
+      str = reindent(str).gsub(/^/, '  ')
+      fname = File.join(self.class.source_root, 'test', 'test_helper.rb')
       inject_into_file fname, str, :before => "end #class"
     end
 

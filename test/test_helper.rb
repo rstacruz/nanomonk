@@ -6,4 +6,4 @@ require 'rack/test'
 
 class Test::Unit::TestCase
   include Rack::Test::Methods
-end # class
+end #class
