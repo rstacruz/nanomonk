@@ -31,6 +31,7 @@ Try a few more packages!
     monk install rtopia
     monk install less
     monk install sinatra-minify
+    monk install jquery  # Even non-gems can work
 
 Start it up!
 
@@ -47,7 +48,7 @@ to create the other necessary files such as configuration files and Rake tasks.
 
 If a recipe doesn't exist for the gem, it'll simply be installed and vendored.
 
-Have a look at the current recipes at: http://github.com/rstacruz/nanomonk-recipes/tree/master/recipes/
+Have a look at the current recipes at the [Nanomonk recipes index](http://github.com/rstacruz/nanomonk-recipes/tree/master/recipes/).
 
 To do
 -----
