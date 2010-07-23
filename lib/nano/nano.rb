@@ -184,7 +184,11 @@ module Nano
       add_dependency gem.name, options.merge({ :version => gem.version.to_s })
       run "gem unpack #{gem.name} -v #{gem.version.to_s} --target=vendor"
 
-      gem.dependencies.each { |dep| dependize get_gemspec(dep.name) }
+      gem.dependencies.each do |dep|
+        next  if dep.type != :runtime
+        spec = get_gemspec(dep.name)
+        dependize spec
+      end
     end
   end
 end
