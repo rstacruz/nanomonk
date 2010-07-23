@@ -3,11 +3,25 @@ module Nano
   class NoGemError < StandardError; end
 
   module Actions
+    # Unindents text. Good for heredocs and such.
+    #
+    # Example:
+    #   caveat I(%{
+    #     Running:
+    #         type `rake minify` to run the process.
+    #   })
+    #
     def I(str)
       reindent(str)
     end
 
     # Queries if a gem is installed in the dependencies file.
+    #
+    # Example:
+    #   if installed? 'less' 
+    #     caveat "PROTIP: Install less for a good time!"
+    #   end
+    #   
     def installed?(gem)
       fname = 'dependencies'
       return false  unless File.exists?(fname)
@@ -17,26 +31,23 @@ module Nano
       not deps.match(/^#{gem}/).nil?
     end
 
-    # Reindents a string. Good for heredoc strings and such.
-    def reindent(str)
-      str = str[1..-1]  if str[0] == "\n" # Remove first newline
-      str.gsub!(/^#{str.match(/^\s*/)[0]}/, '') # Unindent
-      str += "\n"  unless str[-1] == "\n" # Ensure last newline
-      str
-    end
-
-    # Works like append_file, except creates files if they aren't found.
-    def append_file_p(file, str)
-      File.exists?(file) ? append_file(file, str) : create_file(file, str)
-    end
-
     # Add caveats to be shown at the end of the process.
+    #
+    # Example:
+    #   caveats %{
+    #     Ohm has been installed. Please make sure you have Redis
+    #     installed, otherwise results will be catastrophic.
+    #   }
     def caveats(str)
       @caveats ||= []
-      @caveats << str
+      @caveats << reindent(str)
     end
 
     # Adds directives to the app config file. Accepts strings or hashes.
+    #
+    # Example:
+    #   add_config { 's3': { 'key': '00xx' } }
+    #
     def add_config(args)
       # Strings: append at EOF.
       if args.is_a? String
@@ -55,6 +66,11 @@ module Nano
     end
 
     # Adds a requirement into the init.rb bootstrapper.
+    #
+    # Example:
+    #   gem_install 'redcloth'
+    #   add_require 'RedCloth'
+    #
     def add_require(modules)
       str = [modules].flatten.map { |mod| "require \"#{mod}\"\n" }.join('')
       fname = File.join(self.class.source_root, 'init.rb')
@@ -62,6 +78,14 @@ module Nano
     end
 
     # Adds something at the end of the class into the init.rb bootstrapper.
+    # The given string will be added to the end of the class definition.
+    # 
+    # Example:
+    #   add_initializer I(%{
+    #     # Connect to the database.
+    #     Ohm.connect(...)
+    #   })
+    #
     def add_initializer(str)
       str = reindent(str) + "\n"
       fname = File.join(self.class.source_root, 'init.rb')
@@ -69,6 +93,12 @@ module Nano
     end
 
     # Injects something into the main class in the bootstrapper.
+    #
+    # Example:
+    #   add_class_def I(%{
+    #     register Sinatra::I18n
+    #   })
+    #
     def add_class_def(str)
       str = reindent(str).gsub(/^/, '  ')
       fname = File.join(self.class.source_root, 'init.rb')
@@ -123,6 +153,11 @@ module Nano
       add_require req  unless req.nil?
     end
 
+    # Works like append_file, except creates files if they aren't found.
+    def append_file_p(file, str)
+      File.exists?(file) ? append_file(file, str) : create_file(file, str)
+    end
+
     # Adds a gem to the dependency file.
     def add_dependency(gemname, options={})
       create_file 'dependencies' unless File.exists?(File.join(self.class.source_root, 'dependencies'))
@@ -134,6 +169,15 @@ module Nano
         dep.join(' ') + "\n"
       end
     end
+
+    # Reindents a string. Good for heredoc strings and such.
+    def reindent(str)
+      str = str[1..-1]  if str[0] == "\n" # Remove first newline
+      str.gsub!(/^#{str.match(/^\s*/)[0]}/, '') # Unindent
+      str += "\n"  unless str[-1] == "\n" # Ensure last newline
+      str
+    end
+
   end
 end
 
