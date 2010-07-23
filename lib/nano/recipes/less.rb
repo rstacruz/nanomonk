@@ -11,7 +11,7 @@ create_file 'app/routes/css.rb', I(%{
       last_modified stylesheet_last_modified(params[:stylesheet])
       content_type  :css,    :charset => "UTF-8"
       cache_control :public, :must_revalidate, :max_age => 60
-      less :"css/#{params[:stylesheet]}"
+      less :"css/\#{params[:stylesheet]}"
     end
 
     helpers do

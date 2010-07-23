@@ -1,1 +1,6 @@
-ohm 0.0.38
+# Core
+monk-glue git://github.com/sinefunc/glue.git
+rack 1.1.0 git://github.com/rack/rack.git
+sinatra 1.0 git://github.com/sinatra/sinatra.git
+
+# Extras

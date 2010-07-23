@@ -4,14 +4,12 @@ require "rubygems"
 require "vendor/dependencies/lib/dependencies"
 require "monk/glue"
 require "ohm"
+require "less"
 
 class Main < Monk::Glue
   set     :app_file, __FILE__
   use     Rack::Session::Cookie
 end #class
-
-# Connect to redis database.
-Ohm.connect(appconfig(:redis))
 
 Dir['app/**/*.rb'].each { |f| require f }
 Main.run!  if Main.run?

@@ -1,5 +1,5 @@
 require 'thor'
-require './nano'
+require File.join(File.dirname(__FILE__), 'nano')
 
 class Monk < Thor
   include Thor::Actions
