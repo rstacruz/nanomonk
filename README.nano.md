@@ -63,7 +63,7 @@ You can simulate the original Monk skeleton with:
   monk install haml ohm
   monk install quietbacktrace override spawn ffaker stories contest --test
 
-And some useful extras (most of there are used in the Sinefunc skeleton):
+And you can also add in some useful extras (most of there are used in the Sinefunc skeleton):
 
   monk install sinatra-minify sinatra-helpers sinatra-i18n sinatra-security rtopia
   monk install pagination less sinatra-minify jquery
