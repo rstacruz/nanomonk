@@ -7,6 +7,7 @@ private
   end
 end
 
+load 'lib/thors/monk.thor'
 Dir['lib/thors/*.thor'].each { |f| load f }
 load 'lib/nano/nano.thor'
 
