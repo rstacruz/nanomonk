@@ -54,6 +54,8 @@ module Nano
     end
 
     # Add notes.
+    # Notes will be written to README files and displayed on screen after
+    # a 'monk install'.
     #
     def notes(section, str)
       @notes ||= Hash.new
