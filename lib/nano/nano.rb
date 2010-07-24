@@ -3,6 +3,15 @@ module Nano
   class NoGemError < StandardError; end
 
   module Actions
+    # This module is intended to supplement Thor::Actions with actions that are 
+    # useful in extending Monk applications.
+    #
+    # Usage:
+    #   class Monk < Thor
+    #     include Thor::Actions
+    #     include Nano::Actions
+    #   end
+
     # Unindents text. Good for heredocs and such.
     #
     # Example:
@@ -78,6 +87,12 @@ module Nano
       inject_into_file fname, str, :before => /^\s*\nclass/
     end
 
+    # Adds a requirement into the test helpers. 
+    #
+    # Example:
+    #   gem_install 'spawn'
+    #   add_test_require 'spawn'
+    #
     def add_test_require(modules)
       str = [modules].flatten.map { |mod| "require \"#{mod}\"\n" }.join('')
       fname = File.join(self.class.source_root, 'test', 'test_helper.rb')
