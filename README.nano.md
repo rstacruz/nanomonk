@@ -74,7 +74,6 @@ And you can also add in some useful extras (most of there are used in the Sinefu
 To do
 -----
 
- - add_dependency should update an existing dependency instead of add
  - gem_install_from_git?
  - Recipes
    - more ORMs: activerecord, datamapper, candy, mongoid

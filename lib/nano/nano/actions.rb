@@ -79,9 +79,7 @@ module Nano::Actions
         config = {}
         config = YAML::load(fname)  if File.exists?(fname)
         config = config.merge(args)
-      
-        # TODO: Find the thor equivalent of file overwriting
-        File.open(fname, 'w') { |f| f << YAML::dump(config) }
+        create_file fname, YAML::dump(config), :force => true
       end
     end
   end
@@ -203,14 +201,23 @@ module Nano::Actions
   # (This will almost never need to be called.)
   #
   def add_dependency(gemname, options={})
-    create_file 'dependencies' unless File.exists?(File.join(self.class.source_root, 'dependencies'))
-    append_file 'dependencies' do
-      dep = []
-      dep << gemname
-      dep << options[:version]   unless options[:version].nil?
-      dep << options[:git]       unless options[:git].nil?
-      dep.join(' ') + "\n"
+    # Touch.
+    fname = File.join(self.class.source_root, 'dependencies')
+    create_file 'dependencies' unless File.exists?(fname)
+
+    # Construct the dependencies line.
+    dep = []
+    dep << gemname
+    dep << options[:version]   unless options[:version].nil?
+    dep << options[:git]       unless options[:git].nil?
+    dep = dep.join(' ')
+
+    skip = false
+    gsub_file 'dependencies', /^\s*#{gemname}.*$/ do
+      skip = true; dep
     end
+
+    append_file 'dependencies', dep  unless skip
   end
 
   # Reindents a string. Good for heredoc strings and such.
