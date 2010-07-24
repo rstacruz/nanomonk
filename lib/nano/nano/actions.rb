@@ -200,7 +200,7 @@ module Nano::Actions
     end
 
     append_file 'dependencies', "#{dep}\n", :verbose => false  unless skip
-    say_status(:update, 'dependencies')
+    say_status(:update, "dependencies (#{gemname})")
   end
 
   # Reindents a string. Good for heredoc strings and such.
