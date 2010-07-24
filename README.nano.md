@@ -55,10 +55,26 @@ Assumptions
 
 You have to be using RVM.
 
+Tips and tricks
+---------------
+
+You can simulate the original Monk skeleton with:
+
+  monk install haml ohm
+  monk install quietbacktrace override spawn ffaker stories contest --test
+
+And some useful extras (most of there are used in the Sinefunc skeleton):
+
+  monk install sinatra-minify sinatra-helpers sinatra-i18n sinatra-security rtopia
+  monk install pagination less sinatra-minify jquery
+  monk install webrat --test
+
 To do
 -----
 
  - add_dependency should update an existing dependency instead of add
  - gem_install_from_git?
- - more ORMs: activerecord, datamapper, candy, mongoid
- - more templating systems: erb, ...
+ - Recipes
+   - more ORMs: activerecord, datamapper, candy, mongoid
+   - more templating systems: erb, ...
+   - more test systems: stories, rspec
