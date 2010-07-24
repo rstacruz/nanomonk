@@ -75,7 +75,8 @@ module Nano::Actions
   def add_require(modules)
     str = [modules].flatten.map { |mod| "require \"#{mod}\"\n" }.join('')
     fname = File.join(self.class.source_root, 'init.rb')
-    inject_into_file fname, str, :before => /^\s*\nclass/
+    inject_into_file fname, str, :before => /^\s*\nclass/, :verbose => false
+    say_status :update, "init.rb (+require)"
   end
 
   # Adds a requirement into the test helpers. 
@@ -87,7 +88,8 @@ module Nano::Actions
   def add_test_require(modules)
     str = [modules].flatten.map { |mod| "require \"#{mod}\"\n" }.join('')
     fname = File.join(self.class.source_root, 'test', 'test_helper.rb')
-    inject_into_file fname, str, :before => /^\s*\nclass/
+    inject_into_file fname, str, :before => /^\s*\nclass/, :verbose => false
+    say_status :update, "test/test_helper.rb (+require)"
   end
 
   # Adds something at the end of the class into the init.rb bootstrapper.
@@ -102,7 +104,8 @@ module Nano::Actions
   def add_initializer(str)
     str = reindent(str) + "\n"
     fname = File.join(self.class.source_root, 'init.rb')
-    inject_into_file fname, str, :after => "end #class\n\n"
+    inject_into_file fname, str, :after => "end #class\n\n", :verbose => false
+    say_status :update, "init.rb (+initializer)"
   end
 
   # Injects something into the main class in the bootstrapper.
@@ -115,7 +118,8 @@ module Nano::Actions
   def add_class_def(str)
     str = reindent(str).gsub(/^/, '  ')
     fname = File.join(self.class.source_root, 'init.rb')
-    inject_into_file fname, str, :before => "end #class"
+    inject_into_file fname, str, :before => "end #class", :verbose => false
+    say_status :update, 'init.rb (class Main)'
   end
 
   # Adds some definitions under class Test::Unit::TestCase.
@@ -130,7 +134,8 @@ module Nano::Actions
   def add_test_helper(str)
     str = reindent(str).gsub(/^/, '  ')
     fname = File.join(self.class.source_root, 'test', 'test_helper.rb')
-    inject_into_file fname, str, :before => "end #class"
+    inject_into_file fname, str, :before => "end #class", :verbose => false
+    say_status :update, 'test/test_helper.rb (class TestCase)'
   end
 
   # Adds some statements under Test::Unit::TestCase#setup.
@@ -144,7 +149,8 @@ module Nano::Actions
   def add_test_setup(str)
     str = reindent(str).gsub(/^/, '    ')
     fname = File.join(self.class.source_root, 'test', 'test_helper.rb')
-    inject_into_file fname, str, :before => "  end #setup"
+    inject_into_file fname, str, :before => "  end #setup", :verbose => false
+    say_status :update, 'test/test_helper.rb (TestCase#setup)'
   end
 
   # Adds a gem as a dependency.
@@ -221,6 +227,8 @@ module Nano::Actions
   #   Nano::NoGemError
   #
   def install_package(package, options={})
+    say_status :install, package
+
     unless options[:gem]
       # Try locals
       f = self.class.recipe_path("#{package}.rb")
