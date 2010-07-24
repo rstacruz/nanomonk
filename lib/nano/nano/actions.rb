@@ -222,7 +222,7 @@ module Nano::Actions
       skip = true; dep
     end
 
-    append_file 'dependencies', dep  unless skip
+    append_file 'dependencies', "#{dep}\n"  unless skip
   end
 
   # Reindents a string. Good for heredoc strings and such.
