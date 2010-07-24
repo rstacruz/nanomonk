@@ -12,14 +12,20 @@ class Monk < Thor
     File.exists?(example) ? copy_file(example, target) : say_status(:missing, example)
   end
 
+  add_config_file 'config/appconfig.yml'
+
 private
   
   def self.source_root
     File.dirname(__FILE__)
   end
   
-  def root_path
+  def self.root_path
     File.expand_path(File.join(File.dirname(__FILE__), '..', '..'))
+  end
+
+  def root_path
+    self.class.root_path
   end
 
   def target_file_for(example_file)
@@ -27,10 +33,16 @@ private
   end
 
   def verify_config(env)
-    verify "#{root_path}/config/appconfig.example.yml"
+    @@config_files.each { |f| verify(f % { :env => RACK_ENV }) }  unless @@config_files.nil?
+  end
+
+  def self.add_config_file(fname)
+    @@config_files ||= Array.new
+    @@config_files << "#{root_path}/#{fname}"
   end
 
   def verify(example)
     copy_example(example) unless File.exists?(target_file_for(example))
   end
 end
+
