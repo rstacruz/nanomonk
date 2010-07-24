@@ -76,7 +76,7 @@ module Nano::Actions
     str = [modules].flatten.map { |mod| "require \"#{mod}\"\n" }.join('')
     fname = File.join(self.class.source_root, 'init.rb')
     inject_into_file fname, str, :before => /^\s*\nclass/, :verbose => false
-    say_status :update, "init.rb (+require)"
+    say_status :update, "init.rb (+require #{[modules].flatten.join(', ')})"
   end
 
   # Adds a requirement into the test helpers. 
@@ -89,7 +89,7 @@ module Nano::Actions
     str = [modules].flatten.map { |mod| "require \"#{mod}\"\n" }.join('')
     fname = File.join(self.class.source_root, 'test', 'test_helper.rb')
     inject_into_file fname, str, :before => /^\s*\nclass/, :verbose => false
-    say_status :update, "test/test_helper.rb (+require)"
+    say_status :update, "test/test_helper.rb (+require #{[modules].flatten.join(', ')})"
   end
 
   # Adds something at the end of the class into the init.rb bootstrapper.
