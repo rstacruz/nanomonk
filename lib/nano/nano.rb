@@ -210,6 +210,38 @@ module Nano
       str
     end
 
+    # Installs a given package.
+    # This differs from #gem_install by trying recipes first, and
+    # displaying caveats after.
+    #
+    # Raises:
+    #   Nano::AlreadyInstalledError
+    #   Nano::NoGemError
+    #
+    def install_package(package, options={})
+      unless options[:gem]
+        # Try local and remote
+        f = self.class.recipe_path("#{package}.rb")
+        f = self.class.recipe_remote(package) unless File.exists?(f)
+
+        begin
+          return apply(f)
+        rescue OpenURI::HTTPError
+          nil
+        end
+      end
+
+      # Try installing the gem.
+      req_name = package.gsub('-', '/')
+      gem_install package
+      add_require req_name
+
+      caveats I(%{
+        The gem `#{package}` has been installed.
+        init.rb has been auto-updated with `require "#{req_name}"`.
+      })
+    end
+    
   private
 
     # Returns the Gem::Specification for a certain gem.
