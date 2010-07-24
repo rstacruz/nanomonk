@@ -1,4 +1,4 @@
 # Recipe sources go here.
-# The top entries will be tried first.
+# The bottom entries will be tried first.
 
 default http://github.com/rstacruz/nanomonk-recipes/raw/master/recipes/%{package}.rb
