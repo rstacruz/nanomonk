@@ -66,29 +66,6 @@ module Nano::Actions
     append_file_p "README.#{section}.md", "#{str}\n\n"
   end
 
-  # Adds directives to the app config file. Accepts strings or hashes.
-  #
-  # Example:
-  #   add_config { 's3': { 'key': '00xx' } }
-  #
-  def add_config(args)
-    ['config/appconfig.yml', 'config/appconfig.example.yml'].each do |fname|
-      # Strings: append at EOF.
-      if args.is_a? String
-        append_file_p frame, reindent(args)
-
-      # Hash: Merge the hash into the current app config.
-      elsif args.is_a? Hash
-        require 'yaml'
-        
-        config = {}
-        config = YAML::load(fname)  if File.exists?(fname)
-        config = config.merge(args)
-        create_file fname, YAML::dump(config), :force => true
-      end
-    end
-  end
-
   # Adds a requirement into the init.rb bootstrapper.
   #
   # Example:
