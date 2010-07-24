@@ -8,9 +8,11 @@ require 'yaml'
 #
 # Example:
 #   # Reads datamapper.yml for [:development]['adapter']
-#   config(:datamapper, 'adapter')  #=> 'mysql'
+#   app_config(:datamapper, 'adapter')  #=> 'mysql'
 #
-def config(domain, key=nil)
+# TODO: Merge this onto a custom monk glue?
+#
+def app_config(domain, key=nil)
   domain = domain.to_sym
 
   unless $monk_config
