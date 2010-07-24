@@ -53,6 +53,14 @@ module Nano
       @caveats << reindent(str)
     end
 
+    # Add notes.
+    #
+    def notes(key, str)
+      @notes ||= Hash.new
+      @notes[key] ||= Array.new
+      @notes[key] << reindent(str)
+    end
+
     # Adds directives to the app config file. Accepts strings or hashes.
     #
     # Example:

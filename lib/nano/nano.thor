@@ -14,6 +14,19 @@ class Monk < Thor
       unless @caveats.nil?
         puts "\n" + [@caveats].join("\n\n")
       end
+
+      unless @notes.nil?
+        outputs = []
+        @notes.each do |section, text|
+          fname = "README.#{section}.md"
+          text  = text.join("\n\n")
+          outputs << fname + "\n" + ("=" * fname.size)
+          outputs << text
+          append_file_p fname, text
+        end
+
+        puts "\n" + outputs.join("\n\n") + "\n"
+      end
       
     rescue Nano::AlreadyInstalledError
       puts "This gem is already installed."
