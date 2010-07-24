@@ -255,7 +255,7 @@ module Nano
     #   # ]
     #
     def recipe_remotes
-      fname = File.join(self.source_root, 'config', 'nano_sources.list')
+      fname = File.join(root_path, 'config', 'nano_sources.list')
       File.open(fname) do |f|
         f.read.split("\n").map do |line|
           parts = line.partition(" ")
