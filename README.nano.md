@@ -26,6 +26,7 @@ Install a templating system. It's probably best to do this first!
 Install an ORM if need one.
 
     monk install ohm
+    # or: datamapper, datamapper-sqlite
 
 Try a few more packages!
 
