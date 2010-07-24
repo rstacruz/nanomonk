@@ -20,6 +20,11 @@ module Nano::Actions
     reindent(str)
   end
 
+  # Returns the name of the app.
+  def app_name
+    File.basename(root_path)
+  end
+
   # Queries if a gem is installed in the dependencies file.
   #
   # Example:
