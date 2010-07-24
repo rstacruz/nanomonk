@@ -6,7 +6,8 @@ class Monk < Thor
   include Nano::Actions
 
   desc "install", "Installs a package."
-  method_option :gem, :type => :boolean
+  method_option :gem,  :type => :boolean
+  method_option :test, :type => :boolean
   def install(*packages)
     packages.each do |package|
       begin

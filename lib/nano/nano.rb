@@ -246,12 +246,22 @@ module Nano
       # Try installing the gem.
       req_name = package.gsub('-', '/')
       gem_install package
-      add_require req_name
 
-      caveats I(%{
-        The gem `#{package}` has been installed.
-        init.rb has been auto-updated with `require "#{req_name}"`.
-      })
+      # Take care of adding 'require'.
+      if options[:test]
+        add_test_require req_name
+        caveats I(%{
+          The gem `#{package}` has been installed.
+          test_helpers.rb has been auto-updated with `require "#{req_name}"`.
+        })
+
+      else
+        add_require req_name
+        caveats I(%{
+          The gem `#{package}` has been installed.
+          init.rb has been auto-updated with `require "#{req_name}"`.
+        })
+      end
     end
 
   private
