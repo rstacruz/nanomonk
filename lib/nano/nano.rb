@@ -30,7 +30,7 @@ module Nano
     #   if installed? 'less' 
     #     caveat "PROTIP: Install less for a good time!"
     #   end
-    #   
+    #
     def installed?(gem)
       fname = 'dependencies'
       return false  unless File.exists?(fname)
@@ -302,7 +302,7 @@ module Nano
     end
 
     # Install the dependencies for the given gem.
-    # gem is a Gem::Specification.
+    # gem is a Gem::Specification or a String.
     #
     def dependize(gem)
       return if gem.nil?
