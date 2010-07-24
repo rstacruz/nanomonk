@@ -1,0 +1,1 @@
+default http://github.com/rstacruz/nanomonk-recipes/raw/master/recipes/%{package}.rb

@@ -33,12 +33,6 @@ private
     File.expand_path(fname)
   end
 
-  # Returns the remote path for the recipe for the given package.
-  #
-  def self.recipe_remote(package)
-    "http://github.com/rstacruz/nanomonk-recipes/raw/master/recipes/#{package}.rb"
-  end
-
   def self.source_root
     File.join(File.dirname(__FILE__), '..', '..')
   end

@@ -220,14 +220,16 @@ module Nano
     #
     def install_package(package, options={})
       unless options[:gem]
-        # Try local and remote
+        # Try locals
         f = self.class.recipe_path("#{package}.rb")
-        f = self.class.recipe_remote(package) unless File.exists?(f)
+        return apply(f)  if File.exists?(f)
 
-        begin
-          return apply(f)
-        rescue OpenURI::HTTPError
-          nil
+        # Try remotes one by one
+        recipe_remotes.each do |remote|
+          begin
+            url = remote[:url] % { :package => package }
+            return apply(url)
+          rescue OpenURI::HTTPError; end
         end
       end
 
@@ -243,6 +245,24 @@ module Nano
     end
     
   private
+
+    # Returns the remote path for the recipe for the given package.
+    # Example:
+    #
+    #   p self.recipe_remotes
+    #   # [ { :name => 'custom', :url => 'http://yyy/%{package}.rb' },
+    #   #   { :name => 'default', :url => 'http://xxx/%{package}.rb' }
+    #   # ]
+    #
+    def recipe_remotes
+      fname = File.join(self.source_root, 'config', 'nano_sources.list')
+      File.open(fname) do |f|
+        f.read.split("\n").map do |line|
+          parts = line.partition(" ")
+          { :name => parts[0], :url => parts[2] }
+        end
+      end
+    end
 
     # Returns the Gem::Specification for a certain gem.
     # Returns nil if the gem is not available.
@@ -260,7 +280,7 @@ module Nano
 
     # Install the dependencies for the given gem.
     # gem is a Gem::Specification.
-
+    #
     def dependize(gem)
       return if gem.nil?
       gem = get_gemspec(gem)  if gem.is_a? String
