@@ -251,7 +251,7 @@ module Nano
         init.rb has been auto-updated with `require "#{req_name}"`.
       })
     end
-    
+
   private
 
     # Returns the remote path for the recipe for the given package.

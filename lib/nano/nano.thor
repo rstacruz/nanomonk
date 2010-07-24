@@ -7,32 +7,34 @@ class Monk < Thor
 
   desc "install", "Installs a package."
   method_option :gem, :type => :boolean
-  def install(package)
-    begin
-      install_package package, options
+  def install(*packages)
+    packages.each do |package|
+      begin
+        install_package package, options
+        
+      rescue Nano::AlreadyInstalledError
+        puts "This gem is already installed."
 
-      unless @caveats.nil?
-        puts "\n" + [@caveats].join("\n\n")
+      rescue Nano::NoGemError
+        puts "No such gem/package."
+      end
+    end
+
+    unless @caveats.nil?
+      puts "\n" + [@caveats].join("\n\n")
+    end
+
+    unless @notes.nil?
+      outputs = []
+      @notes.each do |section, text|
+        fname = "README.#{section}.md"
+        text  = text.join("\n\n")
+        outputs << fname + "\n" + ("=" * fname.size)
+        outputs << text
+        append_file_p fname, text
       end
 
-      unless @notes.nil?
-        outputs = []
-        @notes.each do |section, text|
-          fname = "README.#{section}.md"
-          text  = text.join("\n\n")
-          outputs << fname + "\n" + ("=" * fname.size)
-          outputs << text
-          append_file_p fname, text
-        end
-
-        puts "\n" + outputs.join("\n\n") + "\n"
-      end
-      
-    rescue Nano::AlreadyInstalledError
-      puts "This gem is already installed."
-
-    rescue Nano::NoGemError
-      puts "No such gem/package."
+      puts "\n" + outputs.join("\n\n") + "\n"
     end
   end
 
