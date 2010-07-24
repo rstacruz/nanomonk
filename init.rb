@@ -1,7 +1,7 @@
 ROOT_DIR = File.expand_path(File.dirname(__FILE__)) unless defined? ROOT_DIR
 
 require "rubygems"
-require "vendor/dependencies/lib/dependencies"
+require "./vendor/dependencies/lib/dependencies"
 require "monk/glue"
 
 class Main < Monk::Glue
