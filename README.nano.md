@@ -17,11 +17,11 @@ Create a new app from this skeleton.
     monk init myapp -s nano
     cd myapp
 
-Install a templating system. Do this first!
+Install a templating system. It's probably best to do this first!
 
     monk install haml
 
-Install an ORM (if needed).
+Install an ORM if need one.
 
     monk install ohm
 
@@ -55,3 +55,5 @@ To do
 
  - add_dependency should update an existing dependency instead of add
  - gem_install_from_git?
+ - more ORMs: activerecord, datamapper, candy, mongoid
+ - more templating systems: erb, ...
