@@ -195,11 +195,12 @@ module Nano::Actions
     dep = dep.join(' ')
 
     skip = false
-    gsub_file 'dependencies', /^\s*#{gemname}.*$/ do
+    gsub_file 'dependencies', /^\s*#{gemname}.*$/, :verbose => false do
       skip = true; dep
     end
 
-    append_file 'dependencies', "#{dep}\n"  unless skip
+    append_file 'dependencies', "#{dep}\n", :verbose => false  unless skip
+    say_status(:update, 'dependencies')
   end
 
   # Reindents a string. Good for heredoc strings and such.
