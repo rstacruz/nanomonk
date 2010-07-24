@@ -8,6 +8,8 @@ free from the restrictions of the default gems that most monk skeletons ship wit
 Instructions
 ------------
 
+First: install rvm and monk.
+
 Add the `nano` skeleton.
 
     monk add nano git://github.com/rstacruz/nanomonk
