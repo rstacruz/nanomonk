@@ -67,19 +67,22 @@ module Nano::Actions
   #   add_config { 's3': { 'key': '00xx' } }
   #
   def add_config(args)
-    # Strings: append at EOF.
-    if args.is_a? String
-      append_file_p 'config/appconfig.yml', reindent(args)
+    ['config/appconfig.yml', 'config/appconfig.example.yml'].each do |fname|
+      # Strings: append at EOF.
+      if args.is_a? String
+        append_file_p frame, reindent(args)
 
-    # Hash: Merge the hash into the current app config.
-    elsif args.is_a? Hash
-      require 'yaml'
-      fname = 'config/appconfig.yml'
+      # Hash: Merge the hash into the current app config.
+      elsif args.is_a? Hash
+        require 'yaml'
+        
+        config = {}
+        config = YAML::load(fname)  if File.exists?(fname)
+        config = config.merge(args)
       
-      config = {}
-      config = YAML::load(fname)  if File.exists?(fname)
-      config = config.merge(args)
-      File.open(fname, 'w') { |f| f << YAML::dump(config) }
+        # TODO: Find the thor equivalent of file overwriting
+        File.open(fname, 'w') { |f| f << YAML::dump(config) }
+      end
     end
   end
 
