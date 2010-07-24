@@ -178,7 +178,8 @@ module Nano::Actions
     # Get the gemspec; install it if needed.
     spec = get_gemspec(gemname)
     if spec.nil?
-      run "gem install #{gemname}"
+      gem_install_opts = "--no-rdoc --no-ri --no-test"
+      run "gem install #{gemname} #{gem_install_opts}"
       raise Nano::NoGemError  if $?.to_i > 0
       spec = get_gemspec(gemname)
     end
