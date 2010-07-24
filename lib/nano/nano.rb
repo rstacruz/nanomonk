@@ -182,12 +182,14 @@ module Nano
     end
 
     # Works like append_file, except creates files if they aren't found.
+    #
     def append_file_p(file, str)
       File.exists?(file) ? append_file(file, str) : create_file(file, str)
     end
 
     # Adds a gem to the dependency file.
     # (This will almost never need to be called.)
+    #
     def add_dependency(gemname, options={})
       create_file 'dependencies' unless File.exists?(File.join(self.class.source_root, 'dependencies'))
       append_file 'dependencies' do
@@ -200,10 +202,11 @@ module Nano
     end
 
     # Reindents a string. Good for heredoc strings and such.
+    #
     def reindent(str)
-      str = str[1..-1]  if str[0] == "\n" # Remove first newline
+      str = str[1..-1]  if str[0] == "\n"       # Remove first newline
       str.gsub!(/^#{str.match(/^\s*/)[0]}/, '') # Unindent
-      str += "\n"  unless str[-1] == "\n" # Ensure last newline
+      str += "\n"  unless str[-1] == "\n"       # Ensure last newline
       str
     end
 
@@ -211,6 +214,7 @@ module Nano
 
     # Returns the Gem::Specification for a certain gem.
     # Returns nil if the gem is not available.
+    #
     def get_gemspec(gemname)
       # Trigger the autoload of this class, as it's needed
       # for YAML::load().
@@ -222,20 +226,27 @@ module Nano
       YAML::load(specs) || nil
     end
 
-    # Gem::Specification
+    # Install the dependencies for the given gem.
+    # gem is a Gem::Specification.
+
     def dependize(gem)
       return if gem.nil?
+      gem = get_gemspec(gem)  if gem.is_a? String
+
+      # Add to deps
       add_dependency gem.name, options.merge({ :version => gem.version.to_s })
 
+      # Then vendorize it
       gem_dir = File.join(root_path, 'vendor', "#{gem.name}-#{gem.version.to_s}")
       unless File.directory?(gem_dir)
         run "gem unpack #{gem.name} -v #{gem.version.to_s} --target=vendor"
+        remove_dir File.join(gem_dir, 'test')
       end
 
+      # Recurse to dependencies (ignore dev/test gems)
       gem.dependencies.each do |dep|
         next  if dep.type != :runtime
-        spec = get_gemspec(dep.name)
-        dependize spec
+        dependize dep.name
       end
     end
   end

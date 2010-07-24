@@ -48,11 +48,17 @@ private
     })
   end
   
+  # Returns the local path for recipes. Doing an #install_package will check 
+  # this directory first for a recipe file; if it doesn't find it here, it moves 
+  # onto checking it remotely. This folder is optional and doesn't need to exist.
+  #
   def self.recipe_path(*args)
     fname = File.join(File.dirname(__FILE__), 'recipes', args)
     File.expand_path(fname)
   end
 
+  # Returns the remote path for the recipe for the given package.
+  #
   def self.recipe_remote(package)
     "http://github.com/rstacruz/nanomonk-recipes/raw/master/recipes/#{package}.rb"
   end
