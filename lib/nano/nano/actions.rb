@@ -278,11 +278,13 @@ private
   #
   def recipe_remotes
     fname = File.join(root_path, 'config', 'nano_sources.list')
+
     File.open(fname) do |f|
       f.read.split("\n").inject([]) do |a, line|
+        # Skip comments and blank lines.
         unless line.match(/^\s*#/) or line.count(' ') == 0
           parts = line.partition(" ")
-          a.unshift { :name => parts[0], :url => parts[2] }
+          a.unshift({ :name => parts[0], :url => parts[2] })
         end
         a
       end
