@@ -257,9 +257,12 @@ module Nano
     def recipe_remotes
       fname = File.join(root_path, 'config', 'nano_sources.list')
       File.open(fname) do |f|
-        f.read.split("\n").map do |line|
+        f.read.split("\n").inject([]) do |a, line|
+          next  if line.match(/^\s*#/)
+          next  if line.count(' ') == 0
           parts = line.partition(" ")
-          { :name => parts[0], :url => parts[2] }
+          a << { :name => parts[0], :url => parts[2] }
+          a
         end
       end
     end
