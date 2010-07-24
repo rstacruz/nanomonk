@@ -12,8 +12,6 @@ class Monk < Thor
     File.exists?(example) ? copy_file(example, target) : say_status(:missing, example)
   end
 
-  add_config_file 'config/appconfig.yml'
-
 private
   
   def self.source_root
@@ -44,5 +42,6 @@ private
   def verify(example)
     copy_example(example) unless File.exists?(target_file_for(example))
   end
-end
 
+  add_config_file 'config/appconfig.yml'
+end
