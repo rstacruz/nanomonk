@@ -43,5 +43,5 @@ private
     copy_example(example) unless File.exists?(target_file_for(example))
   end
 
-  add_config_file 'config/appconfig.yml'
+  add_config_file 'config/appconfig.example.yml'
 end
