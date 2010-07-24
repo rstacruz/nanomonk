@@ -50,6 +50,11 @@ If a recipe doesn't exist for the gem, it'll simply be installed and vendored.
 
 Have a look at the current recipes at the [Nanomonk recipes index](http://github.com/rstacruz/nanomonk-recipes/tree/master/recipes/).
 
+Assumptions
+-----------
+
+You have to be using RVM.
+
 To do
 -----
 

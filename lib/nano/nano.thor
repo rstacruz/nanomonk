@@ -25,13 +25,9 @@ class Monk < Thor
     end
 
     unless @notes.nil?
-      outputs = []
-      @notes.each do |section, text|
-        fname = "README.#{section}.md"
-        text  = text.join("\n\n")
-        outputs << fname + "\n" + ("=" * fname.size)
-        outputs << text
-        append_file_p fname, text
+      outputs = @notes.inject([]) do |a, (section, texts)|
+        a << section.capitalize + "\n" + ("=" * section.size)
+        a |= texts
       end
 
       puts "\n" + outputs.join("\n\n") + "\n"

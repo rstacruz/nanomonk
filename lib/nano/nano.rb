@@ -55,10 +55,12 @@ module Nano
 
     # Add notes.
     #
-    def notes(key, str)
+    def notes(section, str)
       @notes ||= Hash.new
-      @notes[key] ||= Array.new
-      @notes[key] << reindent(str)
+      @notes[section] ||= Array.new
+      @notes[section] << str
+
+      append_file_p "README.#{section}.md", "#{str}\n\n"
     end
 
     # Adds directives to the app config file. Accepts strings or hashes.
