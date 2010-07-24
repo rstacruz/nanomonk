@@ -8,7 +8,7 @@ class Monk < Thor
 
   desc "copy_example EXAMPLE, TARGET", "Copies an example file to its destination"
   def copy_example(example, target = target_file_for(example))
-    File.exists?(target) ? return : say_status(:missing, target)
+    return  if File.exists?(target)
     File.exists?(example) ? copy_file(example, target) : say_status(:missing, example)
   end
 
