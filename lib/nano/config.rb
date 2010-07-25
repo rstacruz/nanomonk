@@ -7,8 +7,10 @@ require 'yaml'
 #   key:    The key. Leave blank to return the whole thing.
 #
 # Example:
-#   # Reads datamapper.yml for [:development]['adapter']
-#   app_config(:datamapper, 'adapter')  #=> 'mysql'
+#   # # config/db.yml
+#   # :development:
+#   #   adapter: mysql
+#   app_config(:db, 'adapter')  #=> 'mysql'
 #
 # TODO: Merge this onto a custom monk glue?
 #
@@ -21,6 +23,7 @@ def app_config(domain, key=nil)
 
   unless $monk_config.include?(domain)
     fname = root_path('config', "#{domain}.yml")
+    $monk_config[domain] = Hash.new
     $monk_config[domain] = YAML.load_file(fname)  if File.exists?(fname)
   end
 
