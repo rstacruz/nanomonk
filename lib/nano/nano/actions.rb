@@ -102,7 +102,7 @@ module Nano::Actions
   #   })
   #
   def add_initializer(str)
-    str = reindent(str) + "\n"
+    str = reindent(str)
     fname = File.join(self.class.source_root, 'init.rb')
     inject_into_file fname, str, :after => "end #class\n\n", :verbose => false
     say_status :update, "init.rb (+initializer)"
@@ -116,9 +116,9 @@ module Nano::Actions
   #   })
   #
   def add_class_def(str)
-    str = reindent(str).gsub(/^/, '  ')
+    str = "\n\n" + reindent(str).strip.gsub(/^/, '  ')
     fname = File.join(self.class.source_root, 'init.rb')
-    inject_into_file fname, str, :before => "end #class", :verbose => false
+    inject_into_file fname, str, :before => "\nend #class", :verbose => false
     say_status :update, 'init.rb (class Main)'
   end
 
