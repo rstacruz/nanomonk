@@ -3,7 +3,9 @@ class Monk < Thor
   def start(env = ENV["RACK_ENV"] || "development")
     verify_config(env)
 
-    exec "env RACK_ENV=#{env} ruby init.rb"
+    cmd = "env RACK_ENV=#{env} ruby init.rb"
+    say_status :run, cmd
+    exec cmd
   end
 
   desc "copy_example EXAMPLE, TARGET", "Copies an example file to its destination"
