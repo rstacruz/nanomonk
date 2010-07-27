@@ -237,7 +237,7 @@ module Nano::Actions
       # Try remotes one by one
       recipe_remotes.each do |remote|
         begin
-          url = remote[:url] % { :package => package }
+          url = remote[:url].gsub('%{package}', package)
           return apply(url)
         rescue OpenURI::HTTPError; end
       end
