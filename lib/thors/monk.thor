@@ -15,34 +15,13 @@ class Monk < Thor
   end
 
 private
-  
-  def self.source_root
-    File.dirname(__FILE__)
-  end
-  
   def self.root_path
-    File.expand_path(File.join(File.dirname(__FILE__), '..', '..'))
-  end
-
-  def root_path
-    self.class.root_path
-  end
-
-  def target_file_for(example_file)
-    example_file.sub(".example", "")
-  end
-
-  def verify_config(env)
-    @@config_files.each { |f| verify(f.gsub('%{env}', env)) }  unless @@config_files.nil?
+    File.expand_path(File.dirname(__FILE__), '../..')
   end
 
   def self.add_config_file(fname)
     @@config_files ||= Array.new
     @@config_files << "#{root_path}/#{fname}"
-  end
-
-  def verify(example)
-    copy_example(example) unless File.exists?(target_file_for(example))
   end
 
   add_config_file 'config/appconfig.example.yml'

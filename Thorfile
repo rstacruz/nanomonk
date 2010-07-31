@@ -1,14 +1,9 @@
+load './lib/nano/monkactions.rb'
+load './lib/nano/nano.rb'
+
 class Monk < Thor
   include Thor::Actions
-
-private
-  def root_path(*args)
-    File.expand_path(File.join(File.dirname(__FILE__), args))
-  end
+  include Thor::MonkActions
 end
 
-load 'lib/thors/monk.thor'
-Dir['lib/thors/*.thor'].each { |f| load f }
-load 'lib/nano/nano.thor'
-
-Monk.start  if $0 == __FILE__
+Dir['./lib/thors/*.thor'].each { |fname| load fname }
