@@ -1,4 +1,8 @@
+require File.expand_path(File.join(File.dirname(__FILE__), '../nano-glue/nano.rb'))
+
 class Monk < Thor
+  include Nano::MonkActions
+
   desc "start ENV", "Start Monk in the supplied environment"
   def start(env = ENV["RACK_ENV"] || "development")
     verify_config(env)

@@ -2,6 +2,7 @@ require 'thor'
 
 class Monk < Thor
   include Thor::Actions
+  include Nano::MonkActions
   include Nano::Actions
 
   desc "install", "Installs a package."

@@ -1,4 +1,4 @@
-module Thor::MonkActions
+module Nano::MonkActions
 private
   def root_path(*args)
     File.expand_path(File.join(File.dirname(__FILE__), args))
