@@ -1,7 +1,17 @@
 module Nano::MonkActions
 private
   def root_path(*args)
-    File.expand_path(File.join(File.dirname(__FILE__), args))
+    return @@root_path  if defined?(@@root_path)
+    path = File.dirname(__FILE__)
+    old_path = nil
+
+    while path != old_path
+      return (@@root_path = path)  if File.exists?(File.join(path, 'init.rb'))
+
+      old_path = path
+      path = File.expand_path(File.join(path, '..'))
+    end
+    @@root_path = ''
   end
 
   def target_file_for(example_file)
