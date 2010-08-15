@@ -19,7 +19,7 @@ private
   end
 
   def verify_config(env)
-    @@config_files.each { |f| verify(f.gsub('%{env}', env)) }  unless @@config_files.nil?
+    @@config_files.each { |f| verify(f.gsub('%{env}', env)) }  if defined?(@@config_files)
   end
 
   def verify(example)
