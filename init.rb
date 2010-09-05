@@ -10,5 +10,5 @@ class Main < Monk::Glue
   use     Rack::Session::Cookie
 end #class
 
-Dir['app/**/*.rb'].each { |f| require f }
+Dir['./app/**/*.rb'].each { |f| require f }
 Main.run!  if Main.run?
