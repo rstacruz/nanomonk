@@ -164,6 +164,8 @@ module Nano::Actions
   def gem_install(gemname, options={})
     raise Nano::AlreadyInstalledError  if installed?(gemname)
 
+    return gem_install_git(gemname, options)  if options[:git]
+
     # Get the gemspec; install it if needed.
     spec = get_gemspec(gemname)
     if spec.nil?
@@ -222,6 +224,12 @@ module Nano::Actions
   # This differs from #gem_install by trying recipes first, and
   # displaying caveats after.
   #
+  # Options:
+  #
+  #   gem  - (boolean)
+  #   test - (boolean) If set to true, installs the gem as a test dependency.
+  #   git  - (string, optional)
+  #
   # Raises:
   #   Nano::AlreadyInstalledError
   #   Nano::NoGemError
@@ -229,7 +237,7 @@ module Nano::Actions
   def install_package(package, options={})
     say_status :install, package
 
-    unless options[:gem]
+    unless options[:gem] or options[:git]
       # Try locals
       f = self.class.recipe_path("#{package}.rb")
       return apply(f)  if File.exists?(f)
@@ -245,7 +253,7 @@ module Nano::Actions
 
     # Try installing the gem.
     req_name = package.gsub('-', '/')
-    gem_install package
+    gem_install package, options
 
     # Take care of adding 'require'.
     if options[:test]
@@ -265,6 +273,15 @@ module Nano::Actions
   end
 
 private
+
+  # Installs a gem as a dependency, and vendorizes it.
+  #
+  # Delegate function of #gem_install. Ran when gem_install is called with
+  # the :git option.
+  def gem_install_git(gemname, options)
+    add_dependency gemname, options
+    run "dep vendor #{gemname}"
+  end
 
   # Returns the remote path for the recipe for the given package.
   # Example:

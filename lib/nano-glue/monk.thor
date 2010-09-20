@@ -8,10 +8,14 @@ class Monk < Thor
   desc "install", "Installs a package."
   method_option :gem,  :type => :boolean
   method_option :test, :type => :boolean
+  method_option :git,  :type => :string
+
   def install(*packages)
+    opts = options.inject({}) { |hash, (k, v)| hash[k.to_sym] = v; hash }
+
     packages.each do |package|
       begin
-        install_package package, options
+        install_package package, opts
         
       rescue Nano::AlreadyInstalledError
         puts "This gem is already installed."
