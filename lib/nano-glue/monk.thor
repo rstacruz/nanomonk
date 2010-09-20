@@ -6,12 +6,19 @@ class Monk < Thor
   include Nano::Actions
 
   desc "install", "Installs a package."
-  method_option :gem,  :type => :boolean
-  method_option :test, :type => :boolean
-  method_option :git,  :type => :string
+  method_option :gem,    :type => :boolean
+  method_option :test,   :type => :boolean
+  method_option :git,    :type => :string
+  method_option :github, :type => :string
 
   def install(*packages)
     opts = options.inject({}) { |hash, (k, v)| hash[k.to_sym] = v; hash }
+
+    # In case it's called with --github=user/repo
+    if opts[:github]
+      opts[:git] = "git://github.com/#{opts[:github]}.git"
+      opts[:github] = nil
+    end
 
     packages.each do |package|
       begin
